@@ -50,16 +50,19 @@ const hobbies = [
     id: "11",
     type: "Video Games",
     description: "Something 1",
+    userId: "1",
   },
   {
     id: "22",
     type: "BlackPink",
     description: "Something 2",
+    userId: "2",
   },
   {
     id: "33",
     type: "Social",
     description: "Something 3",
+    userId: "3",
   },
 ];
 
@@ -67,14 +70,17 @@ const posts = [
   {
     id: "1-1-1",
     comment: "123",
+    userId: "1",
   },
   {
     id: "1-1-2",
     comment: "456",
+    userId: "2",
   },
   {
     id: "1-1-3",
     comment: "789",
+    userId: "3",
   },
 ];
 
@@ -94,9 +100,6 @@ const UserType = new GraphQLObjectType({
     profession: {
       type: GraphQLString,
     },
-    hobbyId: {
-      type: GraphQLID,
-    },
   }),
 });
 
@@ -106,11 +109,20 @@ const HobbyType = new GraphQLObjectType({
     id: {
       type: GraphQLID,
     },
+    userId: {
+      type: GraphQLID,
+    },
     type: {
       type: GraphQLString,
     },
     description: {
       type: GraphQLString,
+    },
+    user: {
+      type: UserType,
+      resolve: (parent, args) => {
+        return _.find(dummyData, { id: parent.userId });
+      },
     },
   }),
 });
@@ -121,8 +133,17 @@ const PostType = new GraphQLObjectType({
     id: {
       type: GraphQLID,
     },
+    userId: {
+      type: GraphQLID,
+    },
     comment: {
       type: GraphQLString,
+    },
+    user: {
+      type: UserType,
+      resolve: (parent, args) => {
+        return _.find(dummyData, { id: parent.userId });
+      },
     },
   }),
 });
@@ -156,6 +177,9 @@ const RootQuery = new GraphQLObjectType({
       type: PostType,
       args: {
         id: {
+          type: GraphQLID,
+        },
+        userId: {
           type: GraphQLID,
         },
       },
