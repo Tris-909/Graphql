@@ -4,6 +4,7 @@ const {
   GraphQLID,
   GraphQLString,
   GraphQLInt,
+  GraphQLList,
 } = require("graphql");
 const _ = require("lodash");
 
@@ -64,11 +65,22 @@ const hobbies = [
     description: "Something 3",
     userId: "3",
   },
+  {
+    id: "44",
+    type: "Video Games 2",
+    description: "Something 1",
+    userId: "1",
+  },
 ];
 
 const posts = [
   {
     id: "1-1-1",
+    comment: "123",
+    userId: "1",
+  },
+  {
+    id: "1-1-4",
     comment: "123",
     userId: "1",
   },
@@ -99,6 +111,20 @@ const UserType = new GraphQLObjectType({
     },
     profession: {
       type: GraphQLString,
+    },
+    posts: {
+      type: new GraphQLList(PostType),
+      resolve: (parent, args) => {
+        return _.filter(posts, { userId: parent.id });
+      },
+    },
+    hobbies: {
+      type: new GraphQLList(HobbyType),
+      resolve: (parent, args) => {
+        return _.filter(hobbies, {
+          userId: parent.id,
+        });
+      },
     },
   }),
 });
